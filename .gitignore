@@ -1,0 +1,16 @@
+### Build ###
+target/
+out/
+build/
+*.class
+
+### IntelliJ IDEA ###
+.idea/
+!**/src/main/**/out/
+!**/src/test/**/out/
+*.iml
+*.iws
+*.ipr
+
+### Mac OS ###
+.DS_Store
