@@ -53,6 +53,15 @@
                 <version>3.0.0</version>
             </plugin>
 
+            <!-- Exec Maven Plugin for running demo -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <mainClass>com.scoreboard.ScoreboardDemo</mainClass>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 </project>
