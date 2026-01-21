@@ -21,19 +21,19 @@ public class Scoreboard {
         return game;
     }
 
-    public void finishGame(Long id) {
-        Game game = games.remove(id);
-        if (game == null) {
-            throw new GameNotFoundException(id);
-        }
+    public boolean finishGame(Long id) {
+        return games.remove(id) != null;
     }
 
     public void updateScore(Long id, int homeScore, int awayScore) {
-        Game game = games.get(id);
+        Game game = games.computeIfPresent(id, (key, existingGame) -> {
+            existingGame.updateScore(homeScore, awayScore);
+            return existingGame;
+        });
+
         if (game == null) {
             throw new GameNotFoundException(id);
         }
-        game.updateScore(homeScore, awayScore);
     }
 
     public List<Game> getSummary() {
@@ -60,9 +60,8 @@ public class Scoreboard {
     }
 
     public List<Game> getAllGames() {
-        return new ArrayList<>(games.values());
+        return List.copyOf(games.values());
     }
-
     public int getGameCount() {
         return games.size();
     }

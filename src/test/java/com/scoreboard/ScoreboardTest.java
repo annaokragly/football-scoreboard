@@ -89,8 +89,9 @@ class ScoreboardTest {
 
         assertEquals(1, scoreboard.getGameCount());
 
-        scoreboard.finishGame(gameId);
+        boolean result = scoreboard.finishGame(gameId);
 
+        assertTrue(result); // ← Dodane!
         assertEquals(0, scoreboard.getGameCount());
         assertNull(scoreboard.getGame(gameId));
     }
@@ -103,10 +104,40 @@ class ScoreboardTest {
     }
 
     @Test
-    @DisplayName("Should throw exception when finishing non-existent game")
+    @DisplayName("Should return false when finishing non-existent game")
     void testFinishNonExistentGame() {
-        assertThrows(GameNotFoundException.class,
-                () -> scoreboard.finishGame(999L));
+        boolean result = scoreboard.finishGame(999L);
+
+        assertFalse(result);
+    }
+
+    @Test
+    @DisplayName("Should return true when finishing existing game")
+    void testFinishExistingGame() {
+        Game game = scoreboard.startGame("Spain", "Brazil");
+
+        boolean result = scoreboard.finishGame(game.getId());
+
+        assertTrue(result);
+        assertEquals(0, scoreboard.getGameCount());
+    }
+
+    @Test
+    @DisplayName("Should be idempotent - finishing same game twice")
+    void testFinishGameIdempotent() {
+        Game game = scoreboard.startGame("Spain", "Brazil");
+        Long gameId = game.getId();
+
+        // First call - should return true
+        boolean firstCall = scoreboard.finishGame(gameId);
+        assertTrue(firstCall);
+
+        // Second call - should return false (already finished)
+        boolean secondCall = scoreboard.finishGame(gameId);
+        assertFalse(secondCall);
+
+        // Game count should be 0
+        assertEquals(0, scoreboard.getGameCount());
     }
 
     @Test
@@ -212,7 +243,8 @@ class ScoreboardTest {
         assertEquals("Germany", summary.get(2).getHomeTeam());
 
         // Finish one chosen game
-        scoreboard.finishGame(game3.getId());
+        boolean wasFinished = scoreboard.finishGame(game3.getId());
+        assertTrue(wasFinished);
         assertEquals(2, scoreboard.getGameCount());
 
         // Verify if finished game is removed from summary

@@ -23,8 +23,6 @@ public class ScoreboardDemo {
 
         printAllGames(scoreboard);
 
-
-
         System.out.println("\nUpdating scores...\n");
 
         updateAndPrint(scoreboard, game1, 0, 5);
@@ -33,9 +31,16 @@ public class ScoreboardDemo {
         updateAndPrint(scoreboard, game4, 6, 6);
         updateAndPrint(scoreboard, game5, 1, 2);
 
-        System.out.println("\nFinishing game: " + game5.getHomeTeam()+  " " + game5.getHomeScore() + " - " + game5.getAwayScore() + " " + game5.getAwayTeam() + "\n");
+        System.out.println("\nFinishing game: " + game5.getHomeTeam() + " " +
+                game5.getHomeScore() + " - " + game5.getAwayScore() + " " +
+                game5.getAwayTeam());
 
-        scoreboard.finishGame(game5.getId());
+        boolean wasFinished = scoreboard.finishGame(game5.getId());
+        System.out.println("Game finished: " + wasFinished);
+
+        // Idempotency demonstration
+        boolean finishedAgain = scoreboard.finishGame(game5.getId());
+        System.out.println("Trying to finish again: " + finishedAgain + " (already finished)\n");
 
         printSummary(scoreboard);
     }
