@@ -3,18 +3,19 @@ package com.scoreboard;
 import com.scoreboard.model.Game;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class Scoreboard {
     private final Map<Long, Game> games;
-    private long nextId;
+    private final AtomicLong nextId = new AtomicLong(1);
 
     public Scoreboard() {
-        this.games = new HashMap<>();
-        this.nextId = 1;
+        this.games = new ConcurrentHashMap<>();
     }
 
     public Game startGame(String homeTeam, String awayTeam) {
-        Long id = nextId++;
+        Long id = nextId.getAndIncrement();
         Game game = new Game(id, homeTeam, awayTeam);
         games.put(id, game);
         return game;
@@ -51,7 +52,7 @@ public class Scoreboard {
             return game2.getStartTime().compareTo(game1.getStartTime());
         });
 
-        return summary;
+        return List.copyOf(summary);
     }
 
     public Game getGame(Long id) {

@@ -1,14 +1,13 @@
 package com.scoreboard.model;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 public class Game {
     private final Long id;
     private final String homeTeam;
     private final String awayTeam;
-    private int homeScore;
-    private int awayScore;
-    private final LocalDateTime startTime;
+    private Score score;
+    private final Instant startTime;
 
     public Game(Long id, String homeTeam, String awayTeam) {
         if (homeTeam == null || homeTeam.isBlank()) {
@@ -21,21 +20,12 @@ public class Game {
         this.id = id;
         this.homeTeam = homeTeam.trim();
         this.awayTeam = awayTeam.trim();
-        this.homeScore = 0;
-        this.awayScore = 0;
-        this.startTime = LocalDateTime.now();
+        this.score = Score.initial();
+        this.startTime = Instant.now();
     }
 
     public void updateScore(int homeScore, int awayScore) {
-        if (homeScore < 0 || awayScore < 0) {
-            throw new IllegalArgumentException("Scores cannot be negative");
-        }
-        this.homeScore = homeScore;
-        this.awayScore = awayScore;
-    }
-
-    public int getTotalScore() {
-        return homeScore + awayScore;
+        this.score = new Score(homeScore, awayScore);
     }
 
     // Getters
@@ -51,21 +41,24 @@ public class Game {
         return awayTeam;
     }
 
+    public int getTotalScore() {
+        return score.total();
+    }
+
     public int getHomeScore() {
-        return homeScore;
+        return score.home();
     }
 
     public int getAwayScore() {
-        return awayScore;
+        return score.away();
     }
 
-    public LocalDateTime getStartTime() {
+    public Instant getStartTime() {
         return startTime;
     }
 
     @Override
     public String toString() {
-        return String.format("%s %d - %s %d",
-                homeTeam, homeScore, awayTeam, awayScore);
+        return String.format("%s %d - %s %d", homeTeam, score.home(), awayTeam, score.away());
     }
 }
