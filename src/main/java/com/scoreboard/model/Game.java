@@ -16,10 +16,13 @@ public class Game {
         if (awayTeam == null || awayTeam.isBlank()) {
             throw new IllegalArgumentException("Away team name cannot be empty");
         }
+        this.homeTeam = validateTeamName(homeTeam, "Home");
+        this.awayTeam = validateTeamName(awayTeam, "Away");
+        if (this.homeTeam.equalsIgnoreCase(this.awayTeam)) {
+            throw new IllegalArgumentException("Home and away teams cannot be the same");
+        }
 
         this.id = id;
-        this.homeTeam = homeTeam.trim();
-        this.awayTeam = awayTeam.trim();
         this.score = Score.initial();
         this.startTime = Instant.now();
     }
@@ -60,5 +63,16 @@ public class Game {
     @Override
     public String toString() {
         return String.format("%s %d - %s %d", homeTeam, score.home(), awayTeam, score.away());
+    }
+
+    private String validateTeamName(String teamName, String teamType) {
+        if (teamName == null || teamName.isBlank()) {
+            throw new IllegalArgumentException(teamType + " team name cannot be empty");
+        }
+        String trimmed = teamName.trim();
+        if (trimmed.length() > 50) {
+            throw new IllegalArgumentException(teamType + " team name too long (max 50 characters)");
+        }
+        return trimmed;
     }
 }

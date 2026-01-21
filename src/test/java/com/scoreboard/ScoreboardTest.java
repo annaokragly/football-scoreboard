@@ -98,14 +98,14 @@ class ScoreboardTest {
     @Test
     @DisplayName("Should throw exception when updating non-existent game")
     void testUpdateScoreNonExistentGame() {
-        assertThrows(NoSuchElementException.class,
+        assertThrows(GameNotFoundException.class,
                 () -> scoreboard.updateScore(999L, 1, 1));
     }
 
     @Test
     @DisplayName("Should throw exception when finishing non-existent game")
     void testFinishNonExistentGame() {
-        assertThrows(NoSuchElementException.class,
+        assertThrows(GameNotFoundException.class,
                 () -> scoreboard.finishGame(999L));
     }
 

@@ -24,14 +24,14 @@ public class Scoreboard {
     public void finishGame(Long id) {
         Game game = games.remove(id);
         if (game == null) {
-            throw new NoSuchElementException("Cannot find game with id: " + id);
+            throw new GameNotFoundException(id);
         }
     }
 
     public void updateScore(Long id, int homeScore, int awayScore) {
         Game game = games.get(id);
         if (game == null) {
-            throw new NoSuchElementException("Cannot find game with id: " + id);
+            throw new GameNotFoundException(id);
         }
         game.updateScore(homeScore, awayScore);
     }
