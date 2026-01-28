@@ -3,6 +3,9 @@ package com.scoreboard.model;
 import java.time.Instant;
 import java.util.Objects;
 
+/**
+ * Represents an immutable thread-safe game state in the scoreboard.
+ */
 public final class Game {
     private static final int MAX_TEAM_NAME_LENGTH = 50;
     private final Long id;
@@ -26,7 +29,6 @@ public final class Game {
         this.score = new Score(homeScore, awayScore);
     }
 
-    // Getters
     public Long getId() {
         return id;
     }
@@ -57,7 +59,7 @@ public final class Game {
 
     @Override
     public String toString() {
-        return String.format("%s %d - %s %d", homeTeam, score.home(), awayTeam, score.away());
+        return String.format("%s %d - %d %s ", homeTeam, score.home(),score.away(), awayTeam);
     }
 
     @Override

@@ -69,10 +69,6 @@ public class Scoreboard {
         return games.size();
     }
 
-    public void clear() {
-        games.clear();
-    }
-
     private int compareForSummary(Game g1, Game g2) {
         int totalScoreCompare = Integer.compare(g2.getTotalScore(), g1.getTotalScore());
         if (totalScoreCompare != 0) {

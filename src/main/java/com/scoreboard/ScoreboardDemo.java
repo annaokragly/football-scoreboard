@@ -4,6 +4,9 @@ import com.scoreboard.model.Game;
 
 import java.util.List;
 
+/**
+ * Demonstration of the Scoreboard library usage.
+ */
 public class ScoreboardDemo {
 
     public static void main(String[] args) {
@@ -23,7 +26,7 @@ public class ScoreboardDemo {
 
         printAllGames(scoreboard);
 
-        System.out.println("\nUpdating scores...\n");
+        System.out.println("Updating scores...\n");
 
         updateAndPrint(scoreboard, game1, 0, 5);
         updateAndPrint(scoreboard, game2, 10, 2);
@@ -31,16 +34,9 @@ public class ScoreboardDemo {
         updateAndPrint(scoreboard, game4, 6, 6);
         updateAndPrint(scoreboard, game5, 1, 2);
 
-        System.out.println("\nFinishing game: " + game5.getHomeTeam() + " " +
-                game5.getHomeScore() + " - " + game5.getAwayScore() + " " +
-                game5.getAwayTeam());
+        System.out.println("\nFinishing game: " + game5 + "\n");
 
-        boolean wasFinished = scoreboard.finishGame(game5.getId());
-        System.out.println("Game finished: " + wasFinished);
-
-        // Idempotency demonstration
-        boolean finishedAgain = scoreboard.finishGame(game5.getId());
-        System.out.println("Trying to finish again: " + finishedAgain + " (already finished)\n");
+        demonstrateFinishGame(scoreboard, game5.getId());
 
         printSummary(scoreboard);
     }
@@ -49,7 +45,7 @@ public class ScoreboardDemo {
         System.out.println("Live games:\n");
         List<Game> games = scoreboard.getAllGames();
         for (Game game : games) {
-            System.out.printf("%s %d - %d %s\n",
+            System.out.printf("  %s %d - %d %s\n",
                 game.getHomeTeam(),
                 game.getHomeScore(),
                 game.getAwayScore(),
@@ -60,11 +56,20 @@ public class ScoreboardDemo {
 
     private static void updateAndPrint(Scoreboard scoreboard, Game game, int homeScore, int awayScore) {
         scoreboard.updateScore(game.getId(), homeScore, awayScore);
-        System.out.printf("Updated: %s %d - %d %s\n",
+        System.out.printf("  Updated: %s %d - %d %s\n",
             game.getHomeTeam(),
             game.getHomeScore(),
             game.getAwayScore(),
             game.getAwayTeam());
+    }
+
+
+    private static void demonstrateFinishGame(Scoreboard scoreboard, Long gameId) {
+        boolean firstAttempt = scoreboard.finishGame(gameId);
+        System.out.println("  First finish attempt: " + (firstAttempt ? "✓ Success" : "✗ Failed"));
+
+        boolean secondAttempt = scoreboard.finishGame(gameId);
+        System.out.println("  Second finish attempt: " + (secondAttempt ? "✓ Success" : "✗ Already finished (idempotent)\n"));
     }
 
     private static void printSummary(Scoreboard scoreboard) {
@@ -75,10 +80,11 @@ public class ScoreboardDemo {
         List<Game> summary = scoreboard.getSummary();
         if (summary.isEmpty()) {
             System.out.println("  No games on the scoreboard.");
+            return;
         } else {
             for (int i = 0; i < summary.size(); i++) {
                 Game game = summary.get(i);
-                System.out.printf("%2d. %-15s %2d - %2d %-15s\n",
+                System.out.printf("  %2d. %-15s %2d - %2d %-15s\n",
                         i + 1,
                         game.getHomeTeam(),
                         game.getHomeScore(),
